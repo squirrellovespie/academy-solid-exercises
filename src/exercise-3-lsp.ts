@@ -11,8 +11,11 @@
 //
 // Run:  npm run exercise-3
 // =============================================================
+interface Shape {
+  area(): number;
+}
 
-class Rectangle {
+class Rectangle implements Shape {
   protected width: number = 0;
   protected height: number = 0;
 
@@ -29,26 +32,25 @@ class Rectangle {
   }
 }
 
-class Square extends Rectangle {
-  setWidth(w: number) {
-    this.width = w;
-    this.height = w; // forces equal sides
+class Square implements Shape {
+  protected width: number = 0;
+  protected height: number = 0;
+  
+  setSide(s: number) {
+    this.width = s;
+    this.height = s;
   }
 
-  setHeight(h: number) {
-    this.width = h;
-    this.height = h; // forces equal sides
+  area(): number {
+    return this.width * this.height;
   }
-}
-
-function printArea(shape: Rectangle) {
-  shape.setWidth(5);
-  shape.setHeight(10);
-  console.log(`Expected area: 50, Got: ${shape.area()}`);
 }
 
 const rect = new Rectangle();
-printArea(rect); // ✅ Expected area: 50, Got: 50
+rect.setWidth(5);
+rect.setHeight(10);
+console.log(rect.area()); // ✅ Expected area: 50, Got: 50
 
 const square = new Square();
-printArea(square); // ❌ Expected area: 50, Got: 100
+square.setSide(5); // ❌ Expected area: 25, Got: 100
+console.log(square.area()); // ✅ Expected area: 25, Got: 25
