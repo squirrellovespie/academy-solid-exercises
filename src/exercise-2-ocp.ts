@@ -13,25 +13,45 @@
 
 // ---- PROBLEM CODE (do not delete — understand it first) -----
 
-class DiscountCalculator {
-  calculate(customerType: string, price: number): number {
-    if (customerType === "student") {
-      return price * 0.8; // 20% off
-    }
+interface DiscountCalculator {
+  calculate(price: number): void;
+}
 
-    if (customerType === "employee") {
-      return price * 0.7; // 30% off
-    }
-
-    if (customerType === "vip") {
-      return price * 0.5; // 50% off
-    }
-
-    return price; // no discount
+class NoDiscountCalculator implements DiscountCalculator {
+  calculate(price: number): number {
+    return price; // no discount by default
   }
 }
 
-const calc = new DiscountCalculator();
-console.log("Student price:  ", calc.calculate("student", 100)); // 80
-console.log("VIP price:      ", calc.calculate("vip", 100)); // 50
-console.log("Standard price: ", calc.calculate("standard", 100)); // 100
+class StudentDiscountCalculator implements DiscountCalculator {
+  calculate(price: number): number {
+    return price * 0.8; // 20% off
+  }
+}
+
+class EmployeeDiscountCalculator implements DiscountCalculator {
+  calculate(price: number): number {
+    return price * 0.7; // 30% off
+  }
+}
+
+class VipDiscountCalculator implements DiscountCalculator {
+  calculate(price: number): number {
+    return price * 0.5; // 50% off
+  }
+}
+
+class FinalPrice {
+  constructor(private discountCalculator: DiscountCalculator) {}
+
+  calculate(price: number) {
+    return this.discountCalculator.calculate(price);
+  }
+}
+
+const studentPrice = new FinalPrice(new StudentDiscountCalculator());
+const vipPrice = new FinalPrice(new VipDiscountCalculator());
+const standardPrice = new FinalPrice(new NoDiscountCalculator());
+console.log("Student price:  ", studentPrice.calculate(100)); // 80
+console.log("VIP price:      ", vipPrice.calculate(100)); // 50
+console.log("Standard price: ", standardPrice.calculate(100)); // 100
