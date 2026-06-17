@@ -12,16 +12,24 @@
 //
 // Run:  npm run exercise-5
 // =============================================================
+interface Exporter {
+  export(content: string): void;
+}
 
-class PdfExporter {
+class PdfExporter implements Exporter {
   export(content: string): void {
     console.log(`Exporting to PDF:\n${content}`);
   }
 }
 
-class ReportGenerator {
-  private exporter = new PdfExporter(); // ❌ hard dependency
+class CsvExporter implements Exporter {
+  export(content: string): void {
+    console.log(`Exporting to CSV:\n${content}`);
+  }
+}
 
+class ReportGenerator {
+  constructor(private exporter: Exporter) {} // ✅ depends on abstraction
   generate(data: string[]): void {
     const content = data.join("\n");
     console.log("Generating report...");
@@ -29,5 +37,5 @@ class ReportGenerator {
   }
 }
 
-const generator = new ReportGenerator();
+const generator = new ReportGenerator(new CsvExporter()); // ✅ can swap exporter without changing ReportGenerator
 generator.generate(["Sales: £10,000", "Costs: £4,000", "Profit: £6,000"]);
